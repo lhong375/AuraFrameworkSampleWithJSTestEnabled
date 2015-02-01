@@ -28,27 +28,27 @@
         <dependency>
             <groupId>org.auraframework</groupId>
             <artifactId>aura-util</artifactId>
-            <version>0.1454</version>
+            <version>0.1678</version>
         </dependency>
         <dependency>
             <groupId>org.auraframework</groupId>
             <artifactId>aura</artifactId>
-            <version>0.1454</version>
+            <version>0.1678</version>
         </dependency>
         <dependency>
             <groupId>org.auraframework</groupId>
             <artifactId>aura-impl</artifactId>
-            <version>0.1454</version>
+            <version>0.1678</version>
         </dependency>
         <dependency>
             <groupId>org.auraframework</groupId>
             <artifactId>aura-impl-expression</artifactId>
-            <version>0.1454</version>
+            <version>0.1678</version>
         </dependency>
         <dependency>
             <groupId>org.auraframework</groupId>
             <artifactId>aura-resources</artifactId>
-            <version>0.1454</version>
+            <version>0.1678</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pjl-comp-filter</groupId>

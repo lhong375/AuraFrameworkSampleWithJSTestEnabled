@@ -1,0 +1,4 @@
+<aura:component>
+	<aura:attribute name="strAttributeWithDefaultValue" type="String" default="default value"></aura:attribute>
+	This is just for test : {!v.strAttributeWithDefaultValue}
+</aura:component>
