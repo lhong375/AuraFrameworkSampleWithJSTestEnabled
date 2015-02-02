@@ -27,10 +27,11 @@
 	},
 
 	//This won't work
-	testWithObjAttributePassedIn : {
+	_testWithObjAttributePassedIn : {
 		attributes: {objAttribute : {"key" : "hey"}},
 		test : function(cmp) {
 			console.log(cmp.get("v.objAttribute.key"));
+			$A.test.assertEquals("hey", cmp.get("v.objAttribute.key"));
 		}
 	}
 

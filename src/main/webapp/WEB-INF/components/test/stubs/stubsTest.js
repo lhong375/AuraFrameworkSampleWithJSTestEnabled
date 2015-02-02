@@ -51,15 +51,24 @@
         test : [
             function(cmp) {            
                 var helper = cmp.getDef().getHelper();
-                $A.test.overrideFunction(helper, "functionInHelper",
+                var overridedFunc = $A.test.overrideFunction(helper, "functionInHelper",
                     function (cmp) {
                         //debugger;
                         cmp.set("v.strAttributeWithDefaultValue", "new value from override function");
+                        //or you can set a counter to keep track how many times this function is being called
                     }
                 );
+                //debugger;
                 $A.test.clickOrTouch(cmp.find("button1").getElement());
+                //restore to original one
+                overridedFunc.restore();
             }, function(cmp) {
                 $A.test.assertEquals("new value from override function", cmp.get("v.strAttributeWithDefaultValue"));
+                //debugger;
+                //now it will got to the original one
+                $A.test.clickOrTouch(cmp.find("button1").getElement());
+            }, function(cmp) {
+                $A.test.assertEquals("new value from helper", cmp.get("v.strAttributeWithDefaultValue"));
             }
         ]
     },
@@ -69,7 +78,9 @@
             function(cmp) {
                 $A.test.overrideFunction($A, "error", 
                     function(dispMsg) {
-                        $A.message("!!! My Extra Message Added !!! "+dispMsg);
+                        var new_dispMsg = "!!! My Extra Message Added !!! "+dispMsg;
+                        //debugger;
+                        $A.message(new_dispMsg);
                     });
                 $A.error("Let's throw some error.");
             }

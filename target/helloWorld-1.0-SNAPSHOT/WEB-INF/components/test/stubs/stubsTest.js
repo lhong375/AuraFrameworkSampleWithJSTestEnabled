@@ -10,78 +10,80 @@
                         error : "java.lang.IllegalStateException"
                     },{
                         value : "anything really, but something new"
-                    }]
+                    }
+                    ]
                 }]
         }],
-        attributes : {
-            defaultExpiration : 60,
-            defaultAutoRefreshInterval : 0 // refresh every action
-        },
-        test : [function(cmp) {
-        	$A.test.setTestTimeout(300000);
-            this.resetCounter(cmp, "testRefreshErrorResponseNotStored");
-            $A.test.addWaitFor(false, $A.test.isActionPending);
-        },function(cmp) {
-        	var a = cmp.get("c.fetchDataRecord");
-            a.setParams({testName : "testRefreshErrorResponseNotStored"});
-            a.setStorable();
-            a.setCallback(cmp, function(action){
-            	//sanity check
-            	$A.test.assertEquals(action.getReturnValue(),"anything really","we are not using the correct stub");
-                cmp.getDef().getHelper().findAndSetText(cmp, "callbackCounter",
-                    parseInt(cmp.find("callbackCounter").getElement().innerHTML,10)+1);
-            });
-            $A.test.enqueueAction(a);
-            $A.test.addWaitFor("1", function(){return $A.test.getText(cmp.find("callbackCounter").getElement())},
-                function(){
-                    $A.storageService.getStorage("actions").adapter.getItem(a.getStorageKey(),
-                        function(item){cmp._originalExpiration = item.expires});
+        test : [
+            function(cmp) {
+            	$A.test.setTestTimeout(300000);
+                $A.test.addWaitFor(false, $A.test.isActionPending);
+            },function(cmp) {
+            	var a = cmp.get("c.fetchDataRecord");
+                a.setParams({testName : "testRefreshErrorResponseNotStored"});
+                a.setCallback(cmp, function(action){
+                    //debugger;
+                	$A.test.assertEquals(action.getReturnValue(), "anything really", "we are not using the correct stub");
                 });
-        }, function(cmp) {
-            var a = cmp.get("c.fetchDataRecord");
-            a.setParams({testName : "testRefreshErrorResponseNotStored"});
-            a.setStorable();
-            a.setCallback(cmp, function(action){
-            	cmp.getDef().getHelper().findAndSetText(cmp, "callbackCounter",
-                    parseInt(cmp.find("callbackCounter").getElement().innerHTML,10)+1);
-            });
-            $A.test.enqueueAction(a);
-            $A.test.addWaitFor("3", function(){return $A.test.getText(cmp.find("callbackCounter").getElement())},
-                function(){
-                    $A.storageService.getStorage("actions").adapter.getItem(a.getStorageKey(),
-                        function(item){
-                            $A.test.assertEquals(cmp._originalExpiration, item.expires,
-                                "stored item should not have had expiration modified");
-                        });
+                $A.test.enqueueAction(a);
+            }, function(cmp) {
+                var a = cmp.get("c.fetchDataRecord");
+                a.setParams({testName : "testActionMocked"});
+                a.setCallback(cmp, function(action){
+                    //debugger;
+                    //check what we do under bad database connection?
+                    $A.test.assertEquals(action.getReturnValue(), null, "we are not using the correct stub #2");
                 });
-            // wait for the timer to tick over
-            var now = new Date().getTime();
-            $A.test.addWaitFor(true, function() { return now < new Date().getTime(); }, function(){});
-        }, function(cmp) {
-            var a = cmp.get("c.fetchDataRecord");
-            a.setParams({testName : "testRefreshErrorResponseNotStored"});
-            a.setStorable();
-            a.setCallback(cmp, function(action){
-                var newCount = parseInt(cmp.find("callbackCounter").getElement().innerHTML,10) + 1;
-                cmp.getDef().getHelper().findAndSetText(cmp, "callbackCounter", newCount);
-                // first action run will be stored refresh action
-                if (newCount == 4) {
-                    $A.storageService.getStorage("actions").adapter.getItem(a.getStorageKey(),
-                        function(item){
-                            $A.test.assertEquals(cmp._originalExpiration, item.expires, "Refresh action not run");
-                        });
-                }
-            });
-            $A.test.enqueueAction(a);
-            $A.test.addWaitFor("5", function(){return $A.test.getText(cmp.find("callbackCounter").getElement())},
-                function(){
-                    $A.storageService.getStorage("actions").adapter.getItem(a.getStorageKey(),
-                        function(item){
-                            // after new action is run, it is stored with new expires time
-                            $A.test.assertTrue(cmp._originalExpiration < item.expires,
-                                    "storage expiration was not updated after refresh");
-                        });
+                $A.test.enqueueAction(a);
+            }, function(cmp) {
+                var a = cmp.get("c.fetchDataRecord");
+                a.setParams({testName : "testActionMocked"});
+                a.setCallback(cmp, function(action){
+                    //debugger;
+                    $A.test.assertEquals(action.getReturnValue(), "anything really, but something new","we are not using the correct stub");
                 });
-        } ]
+                $A.test.enqueueAction(a);
+            } 
+        ]
+    },
+
+    testFunctionMocked : {
+        test : [
+            function(cmp) {            
+                var helper = cmp.getDef().getHelper();
+                var overridedFunc = $A.test.overrideFunction(helper, "functionInHelper",
+                    function (cmp) {
+                        //debugger;
+                        cmp.set("v.strAttributeWithDefaultValue", "new value from override function");
+                        //or you can set a counter to keep track how many times this function is being called
+                    }
+                );
+                //debugger;
+                $A.test.clickOrTouch(cmp.find("button1").getElement());
+                //restore to original one
+                overridedFunc.restore();
+            }, function(cmp) {
+                $A.test.assertEquals("new value from override function", cmp.get("v.strAttributeWithDefaultValue"));
+                //debugger;
+                //now it will got to the original one
+                $A.test.clickOrTouch(cmp.find("button1").getElement());
+            }, function(cmp) {
+                $A.test.assertEquals("new value from helper", cmp.get("v.strAttributeWithDefaultValue"));
+            }
+        ]
+    },
+
+    testGlobalFunctionMocked : {
+        test : [
+            function(cmp) {
+                $A.test.overrideFunction($A, "error", 
+                    function(dispMsg) {
+                        var new_dispMsg = "!!! My Extra Message Added !!! "+dispMsg;
+                        //debugger;
+                        $A.message(new_dispMsg);
+                    });
+                $A.error("Let's throw some error.");
+            }
+        ]
     }
 })
