@@ -26,4 +26,12 @@
 		}
 	},
 
+	//This won't work
+	testWithObjAttributePassedIn : {
+		attributes: {objAttribute : {"key" : "hey"}},
+		test : function(cmp) {
+			console.log(cmp.get("v.objAttribute.key"));
+		}
+	}
+
 })

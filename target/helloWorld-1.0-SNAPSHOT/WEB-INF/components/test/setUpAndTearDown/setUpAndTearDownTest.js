@@ -1,4 +1,6 @@
 ({
+    //browsers: ["-IE7", "-IE8"], 
+    //browsers:["GOOGLECHROME", "SAFARI"],
 
     setUp: function() {
         this._sharedList = ["A", "B", "C"];

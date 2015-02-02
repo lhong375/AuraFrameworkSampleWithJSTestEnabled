@@ -1,0 +1,3 @@
+<aura:component render="client" controller="java://org.auraframework.demo.controller.exampleController" >
+ 
+</aura:component>

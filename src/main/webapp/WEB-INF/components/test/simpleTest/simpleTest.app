@@ -1,5 +1,6 @@
 <aura:application>
 	<aura:attribute name="strAttributeWithDefaultValue" type="String" default="default value"></aura:attribute>
+	<aura:attribute name="objAttribute" type="Object[]" /> 
 	
 	<div aura:id="div1" class="div1">
 		string attribute = {!v.strAttributeWithDefaultValue}
