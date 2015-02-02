@@ -1,3 +1,6 @@
 <aura:component render="client" controller="java://org.auraframework.demo.controller.exampleController" >
- 
+	<aura:attribute name="strAttributeWithDefaultValue" type="String" default="default value"></aura:attribute> 
+	<div class="div">
+		<ui:button aura:id="button1" press="{!c.changeAttribute}" label="Change strAttributeWithDefaultValue"/>
+    </div>
 </aura:component>
